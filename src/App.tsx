@@ -81,11 +81,13 @@ export const App: React.FC = () => {
       </Suspense>
       <div className="scene-wash" />
 
-      <TransportModeDock
-        selectedMode={currentMode}
-        modeSelected={modeSelected}
-        onModeChange={handleSelectMode}
-      />
+      {!modeSelected && (
+        <TransportModeDock
+          selectedMode={currentMode}
+          modeSelected={modeSelected}
+          onModeChange={handleSelectMode}
+        />
+      )}
 
       <header className="app-header">
         <motion.button
