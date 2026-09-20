@@ -83,7 +83,7 @@ export const App: React.FC = () => {
 
       <div className="content-frame">
         {screen === 'home' && <HomeScreen selectedMode={currentMode} modeSelected={modeSelected} onModeChange={handleSelectMode} onDestinationSelect={handleDestinationSelect} onResetMode={handleResetView} />}
-        {screen === 'route' && <RouteDetails selectedMode={currentMode} onTrack={() => setScreen('tracking')} />}
+        {screen === 'route' && <RouteDetails selectedMode={currentMode} onTrack={() => setScreen('tracking')} onBack={() => setScreen('home')} />}
         {screen === 'tracking' && <LiveTracking linear={linearTracking} onToggleLinear={() => setLinearTracking((value) => !value)} />}
       </div>
 

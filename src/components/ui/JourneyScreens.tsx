@@ -82,9 +82,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ selectedMode, modeSelect
   </>
 );
 
-export const RouteDetails: React.FC<{ onTrack: () => void; selectedMode: TransitMode }> = ({ onTrack, selectedMode }) => (
+export const RouteDetails: React.FC<{ onTrack: () => void; selectedMode: TransitMode; onBack?: () => void }> = ({ onTrack, selectedMode, onBack }) => (
   <section className="screen-panel route-screen" aria-labelledby="route-heading">
-    <div className="route-topline"><button className="back-link" type="button"><ChevronRight className="back-chevron" aria-hidden="true" /> Edit search</button><span className="live-label"><span className="status-dot" /> Live route</span></div>
+    <div className="route-topline"><button className="back-link" type="button" onClick={onBack}><ChevronRight className="back-chevron" aria-hidden="true" /> Edit search</button><span className="live-label"><span className="status-dot" /> Live route</span></div>
     <div className="route-title-row"><div><span className="section-kicker">Your journey · Today, 06:48</span><h2 id="route-heading">Home Node <span>to</span> KDU Campus</h2><p className="lede">Arrive by 07:06 · 18 min total</p></div><div className="route-score"><strong>96</strong><span>smooth<br />journey</span></div></div>
     <div className="critical-grid"><div className="critical-card delay"><span><Clock3 aria-hidden="true" /> On time</span><strong>18 min</strong><small>Arrives 07:06</small></div><div className="critical-card transfer"><span><RefreshCw aria-hidden="true" /> Transfer</span><strong>1 change</strong><small>Central Exchange</small></div><div className="critical-card good"><span><ShieldCheck aria-hidden="true" /> Safety</span><strong>Clear</strong><small>All systems normal</small></div></div>
     <div className="rebook-alert"><span className="alert-icon"><Wifi aria-hidden="true" /></span><div><strong>Smart rebook is ready</strong><p>If Rail 08 slows down, we will move you to Bus 12 automatically. No action needed.</p></div><button type="button" aria-label="View smart rebook options"><ChevronRight aria-hidden="true" /></button></div>
