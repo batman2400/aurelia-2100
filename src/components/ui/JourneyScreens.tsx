@@ -66,43 +66,8 @@ const itemFadeUp = {
   },
 };
 
-export const HomeScreen: React.FC<HomeScreenProps> = ({ selectedMode, modeSelected, onModeChange, onDestinationSelect, onResetMode }) => (
+export const HomeScreen: React.FC<HomeScreenProps> = ({ selectedMode, modeSelected, onDestinationSelect, onResetMode }) => (
   <>
-    <motion.section
-      className="mode-dock"
-      aria-label="Choose a transport mode"
-      initial={{ opacity: 0, y: 20, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <div className="dock-heading">
-        <span className="status-dot" />
-        <span>Explore the city</span>
-        <small>{modeSelected ? 'Mode selected' : 'Select a layer to begin'}</small>
-      </div>
-      <div className="dock-modes" role="group" aria-label="Transport modes">
-        {modes.map(({ id, label, icon: Icon }) => {
-          const selected = selectedMode === id && modeSelected;
-          return (
-            <motion.button
-              key={id}
-              className={`dock-mode ${selected ? 'is-selected' : ''}`}
-              onClick={() => onModeChange(id)}
-              aria-pressed={selected}
-              title={`Explore ${label}`}
-              whileHover={{ y: -2, scale: 1.02 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 450, damping: 25 }}
-            >
-              <Icon aria-hidden="true" />
-              <span>{label}</span>
-              {selected && <Check className="dock-check" aria-hidden="true" />}
-            </motion.button>
-          );
-        })}
-      </div>
-    </motion.section>
-
     <AnimatePresence>
       {modeSelected && (
         <motion.section
@@ -213,6 +178,43 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ selectedMode, modeSelect
       )}
     </AnimatePresence>
   </>
+);
+
+export const TransportModeDock: React.FC<Pick<HomeScreenProps, 'selectedMode' | 'modeSelected' | 'onModeChange'>> = ({ selectedMode, modeSelected, onModeChange }) => (
+  <motion.section
+    className="mode-dock"
+    aria-label="Choose a transport mode"
+    initial={{ opacity: 0, y: 20, scale: 0.98 }}
+    animate={{ opacity: 1, y: 0, scale: 1 }}
+    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+  >
+    <div className="dock-heading">
+      <span className="status-dot" />
+      <span>Explore the city</span>
+      <small>{modeSelected ? 'Mode selected' : 'Select a layer to begin'}</small>
+    </div>
+    <div className="dock-modes" role="group" aria-label="Transport modes">
+      {modes.map(({ id, label, icon: Icon }) => {
+        const selected = selectedMode === id && modeSelected;
+        return (
+          <motion.button
+            key={id}
+            className={`dock-mode ${selected ? 'is-selected' : ''}`}
+            onClick={() => onModeChange(id)}
+            aria-pressed={selected}
+            title={`Explore ${label}`}
+            whileHover={{ y: -2, scale: 1.02 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+          >
+            <Icon aria-hidden="true" />
+            <span>{label}</span>
+            {selected && <Check className="dock-check" aria-hidden="true" />}
+          </motion.button>
+        );
+      })}
+    </div>
+  </motion.section>
 );
 
 export const RouteDetails: React.FC<{ onTrack: () => void; selectedMode: TransitMode; onBack?: () => void }> = ({ onTrack, selectedMode, onBack }) => (

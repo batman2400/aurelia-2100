@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Accessibility, Eye, Home, Map, Route, Volume2, VolumeX } from 'lucide-react';
-import { HomeScreen, LiveTracking, RouteDetails, AppScreen, Destination } from './components/ui/JourneyScreens';
+import { HomeScreen, LiveTracking, RouteDetails, TransportModeDock, AppScreen, Destination } from './components/ui/JourneyScreens';
 import { TransitMode } from './types';
 import { sound } from './utils/audio';
 
@@ -80,6 +80,12 @@ export const App: React.FC = () => {
         <Scene mode={currentMode} isMobile={isMobile} onCameraArrived={() => undefined} />
       </Suspense>
       <div className="scene-wash" />
+
+      <TransportModeDock
+        selectedMode={currentMode}
+        modeSelected={modeSelected}
+        onModeChange={handleSelectMode}
+      />
 
       <header className="app-header">
         <motion.button
