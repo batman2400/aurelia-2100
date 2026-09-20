@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Scene } from './components/canvas/Scene';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Accessibility, Eye, Home, Map, Route, Volume2, VolumeX } from 'lucide-react';
 import { HomeScreen, LiveTracking, RouteDetails, AppScreen, Destination } from './components/ui/JourneyScreens';
 import { TransitMode } from './types';
 import { sound } from './utils/audio';
+
+const Scene = lazy(() => import('./components/canvas/Scene').then((m) => ({ default: m.Scene })));
 
 /** Detect if we're on a narrow / touch screen */
 const useIsMobile = () => {
@@ -66,31 +68,132 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('keydown', onKey);
   }, [handleSelectMode, handleResetView]);
 
+  const navItems: Array<{ id: AppScreen; label: string; icon: React.ElementType }> = [
+    { id: 'home', label: 'Home / Search', icon: Home },
+    { id: 'route', label: 'Route details', icon: Map },
+    { id: 'tracking', label: 'Live tracking', icon: Eye },
+  ];
+
   return (
     <main className={`app-shell ${highContrast ? 'high-contrast' : ''} ${modeSelected && screen === 'home' ? 'mode-selected' : ''}`}>
-      <Scene mode={currentMode} isMobile={isMobile} onCameraArrived={() => undefined} />
+      <Suspense fallback={<div className="fixed inset-0 bg-[#071317]" />}>
+        <Scene mode={currentMode} isMobile={isMobile} onCameraArrived={() => undefined} />
+      </Suspense>
       <div className="scene-wash" />
 
       <header className="app-header">
-        <button className="brand-lockup" onClick={handleResetView} aria-label="Transportation 2100 home">
-          <span className="brand-symbol"><Route aria-hidden="true" /></span><span><strong>TRANSPORTATION <b>2100</b></strong><small>Human-first city movement</small></span>
-        </button>
+        <motion.button
+          className="brand-lockup"
+          onClick={handleResetView}
+          aria-label="Transportation 2100 home"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.96 }}
+        >
+          <span className="brand-symbol"><Route aria-hidden="true" /></span>
+          <span><strong>TRANSPORTATION <b>2100</b></strong><small>Human-first city movement</small></span>
+        </motion.button>
         <div className="header-actions">
-          <button className={`accessibility-toggle ${highContrast ? 'is-active' : ''}`} onClick={() => setHighContrast((value) => !value)} aria-pressed={highContrast} title="Toggle high contrast and large text"><Accessibility aria-hidden="true" /><span>Access mode</span></button>
-          <button className="icon-button" onClick={toggleSound} aria-label={soundEnabled ? 'Mute audio' : 'Enable audio'}>{soundEnabled ? <Volume2 aria-hidden="true" /> : <VolumeX aria-hidden="true" />}</button>
+          <motion.button
+            className={`accessibility-toggle ${highContrast ? 'is-active' : ''}`}
+            onClick={() => setHighContrast((value) => !value)}
+            aria-pressed={highContrast}
+            title="Toggle high contrast and large text"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.94 }}
+          >
+            <Accessibility aria-hidden="true" />
+            <span>Access mode</span>
+          </motion.button>
+          <motion.button
+            className="icon-button"
+            onClick={toggleSound}
+            aria-label={soundEnabled ? 'Mute audio' : 'Enable audio'}
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.92 }}
+          >
+            {soundEnabled ? <Volume2 aria-hidden="true" /> : <VolumeX aria-hidden="true" />}
+          </motion.button>
         </div>
       </header>
 
       <div className="content-frame">
-        {screen === 'home' && <HomeScreen selectedMode={currentMode} modeSelected={modeSelected} onModeChange={handleSelectMode} onDestinationSelect={handleDestinationSelect} onResetMode={handleResetView} />}
-        {screen === 'route' && <RouteDetails selectedMode={currentMode} onTrack={() => setScreen('tracking')} onBack={() => setScreen('home')} />}
-        {screen === 'tracking' && <LiveTracking linear={linearTracking} onToggleLinear={() => setLinearTracking((value) => !value)} />}
+        <AnimatePresence mode="wait">
+          {screen === 'home' && (
+            <motion.div
+              key="home"
+              initial={{ opacity: 0, y: 16, filter: 'blur(3px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -12, filter: 'blur(3px)' }}
+              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <HomeScreen
+                selectedMode={currentMode}
+                modeSelected={modeSelected}
+                onModeChange={handleSelectMode}
+                onDestinationSelect={handleDestinationSelect}
+                onResetMode={handleResetView}
+              />
+            </motion.div>
+          )}
+          {screen === 'route' && (
+            <motion.div
+              key="route"
+              initial={{ opacity: 0, y: 16, filter: 'blur(3px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -12, filter: 'blur(3px)' }}
+              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <RouteDetails
+                selectedMode={currentMode}
+                onTrack={() => setScreen('tracking')}
+                onBack={() => setScreen('home')}
+              />
+            </motion.div>
+          )}
+          {screen === 'tracking' && (
+            <motion.div
+              key="tracking"
+              initial={{ opacity: 0, y: 16, filter: 'blur(3px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -12, filter: 'blur(3px)' }}
+              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <LiveTracking
+                linear={linearTracking}
+                onToggleLinear={() => setLinearTracking((value) => !value)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <nav className="bottom-navigation" aria-label="Main navigation">
-        <button className={screen === 'home' ? 'is-active' : ''} onClick={() => setScreen('home')} aria-current={screen === 'home' ? 'page' : undefined}><Home aria-hidden="true" /><span>Home / Search</span></button>
-        <button className={screen === 'route' ? 'is-active' : ''} onClick={() => setScreen('route')} aria-current={screen === 'route' ? 'page' : undefined}><Map aria-hidden="true" /><span>Route details</span></button>
-        <button className={screen === 'tracking' ? 'is-active' : ''} onClick={() => setScreen('tracking')} aria-current={screen === 'tracking' ? 'page' : undefined}><Eye aria-hidden="true" /><span>Live tracking</span></button>
+        {navItems.map(({ id, label, icon: Icon }) => {
+          const isActive = screen === id;
+          return (
+            <motion.button
+              key={id}
+              className={`bottom-nav-btn ${isActive ? 'is-active' : ''}`}
+              onClick={() => {
+                sound.playClick();
+                setScreen(id);
+              }}
+              aria-current={isActive ? 'page' : undefined}
+              whileTap={{ scale: 0.92 }}
+              whileHover={{ y: -1 }}
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="bottomNavIndicator"
+                  className="bottom-nav-indicator"
+                  transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                />
+              )}
+              <Icon aria-hidden="true" />
+              <span>{label}</span>
+            </motion.button>
+          );
+        })}
       </nav>
     </main>
   );
