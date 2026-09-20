@@ -46,66 +46,441 @@ const destinations: Array<{ id: Destination; label: string; note: string; eta: s
   { id: 'sky-hub', label: 'Central Sky Hub', note: 'Intercity terminal', eta: '26 min', icon: Plane },
 ];
 
+const containerStagger = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.04,
+    },
+  },
+};
+
+const itemFadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.38, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
 export const HomeScreen: React.FC<HomeScreenProps> = ({ selectedMode, modeSelected, onModeChange, onDestinationSelect, onResetMode }) => (
   <>
-    <section className="mode-dock" aria-label="Choose a transport mode">
-      <div className="dock-heading"><span className="status-dot" /><span>Explore the city</span><small>{modeSelected ? 'Mode selected' : 'Select a layer to begin'}</small></div>
+    <motion.section
+      className="mode-dock"
+      aria-label="Choose a transport mode"
+      initial={{ opacity: 0, y: 20, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div className="dock-heading">
+        <span className="status-dot" />
+        <span>Explore the city</span>
+        <small>{modeSelected ? 'Mode selected' : 'Select a layer to begin'}</small>
+      </div>
       <div className="dock-modes" role="group" aria-label="Transport modes">
         {modes.map(({ id, label, icon: Icon }) => {
           const selected = selectedMode === id && modeSelected;
-          return <button key={id} className={`dock-mode ${selected ? 'is-selected' : ''}`} onClick={() => onModeChange(id)} aria-pressed={selected} title={`Explore ${label}`}>
-            <Icon aria-hidden="true" /><span>{label}</span>{selected && <Check className="dock-check" aria-hidden="true" />}
-          </button>;
+          return (
+            <motion.button
+              key={id}
+              className={`dock-mode ${selected ? 'is-selected' : ''}`}
+              onClick={() => onModeChange(id)}
+              aria-pressed={selected}
+              title={`Explore ${label}`}
+              whileHover={{ y: -2, scale: 1.02 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+            >
+              <Icon aria-hidden="true" />
+              <span>{label}</span>
+              {selected && <Check className="dock-check" aria-hidden="true" />}
+            </motion.button>
+          );
         })}
       </div>
-    </section>
+    </motion.section>
+
     <AnimatePresence>
-      {modeSelected && <motion.section
-        className="search-drawer"
-        aria-labelledby="home-heading"
-        initial={{ opacity: 0, y: 32 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 32 }}
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <div className="drawer-grab" aria-hidden="true" />
-        <div className="drawer-header"><div><div className="eyebrow"><span className="status-dot" /> {modes.find((mode) => mode.id === selectedMode)?.label} layer ready</div><h2 id="home-heading">Where are you <span>going?</span></h2></div><button className="change-mode-button" onClick={onResetMode}><RefreshCw aria-hidden="true" /> Change mode</button></div>
-        <div className="drawer-actions">
-          <button className="search-field" type="button" aria-label="Search for a destination"><span className="search-copy"><MapPin aria-hidden="true" /><span>Search a destination</span></span><span className="search-shortcut">⌘ K</span></button>
-          <button className="voice-button" type="button" aria-label="Start voice search"><Mic aria-hidden="true" /><span><strong>Speak your destination</strong><small>Hands-free search</small></span><ArrowRight aria-hidden="true" /></button>
-        </div>
-        <div className="section-heading drawer-section-heading"><div><span className="section-kicker">Quick destinations</span><h3>Go somewhere familiar</h3></div><button className="text-button" type="button">Saved places <ChevronRight aria-hidden="true" /></button></div>
-        <div className="destination-grid">{destinations.map(({ id, label, note, eta, icon: Icon }) => <button key={id} className="destination-card" onClick={() => onDestinationSelect(id)}><span className="destination-icon"><Icon aria-hidden="true" /></span><span className="destination-text"><strong>{label}</strong><small>{note}</small></span><span className="destination-eta"><Clock3 aria-hidden="true" />{eta}</span><ChevronRight className="destination-arrow" aria-hidden="true" /></button>)}</div>
-        <p className="helper-line"><Headphones aria-hidden="true" /> Select a destination and we will plan the route.</p>
-      </motion.section>}
+      {modeSelected && (
+        <motion.section
+          className="search-drawer"
+          aria-labelledby="home-heading"
+          initial={{ opacity: 0, y: 36, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 32, scale: 0.97 }}
+          transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="drawer-grab" aria-hidden="true" />
+          <div className="drawer-header">
+            <div>
+              <div className="eyebrow">
+                <span className="status-dot" /> {modes.find((mode) => mode.id === selectedMode)?.label} layer ready
+              </div>
+              <h2 id="home-heading">Where are you <span>going?</span></h2>
+            </div>
+            <motion.button
+              className="change-mode-button"
+              onClick={onResetMode}
+              whileHover={{ y: -1, scale: 1.02 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <RefreshCw aria-hidden="true" /> Change mode
+            </motion.button>
+          </div>
+
+          <div className="drawer-actions">
+            <motion.button
+              className="search-field"
+              type="button"
+              aria-label="Search for a destination"
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+            >
+              <span className="search-copy">
+                <MapPin aria-hidden="true" />
+                <span>Search a destination</span>
+              </span>
+              <span className="search-shortcut">⌘ K</span>
+            </motion.button>
+            <motion.button
+              className="voice-button"
+              type="button"
+              aria-label="Start voice search"
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Mic aria-hidden="true" />
+              <span>
+                <strong>Speak your destination</strong>
+                <small>Hands-free search</small>
+              </span>
+              <ArrowRight aria-hidden="true" />
+            </motion.button>
+          </div>
+
+          <div className="section-heading drawer-section-heading">
+            <div>
+              <span className="section-kicker">Quick destinations</span>
+              <h3>Go somewhere familiar</h3>
+            </div>
+            <motion.button
+              className="text-button"
+              type="button"
+              whileHover={{ x: 2 }}
+            >
+              Saved places <ChevronRight aria-hidden="true" />
+            </motion.button>
+          </div>
+
+          <motion.div
+            className="destination-grid"
+            variants={containerStagger}
+            initial="hidden"
+            animate="show"
+          >
+            {destinations.map(({ id, label, note, eta, icon: Icon }) => (
+              <motion.button
+                key={id}
+                className="destination-card"
+                onClick={() => onDestinationSelect(id)}
+                variants={itemFadeUp}
+                whileHover={{ y: -3, scale: 1.02 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              >
+                <span className="destination-icon">
+                  <Icon aria-hidden="true" />
+                </span>
+                <span className="destination-text">
+                  <strong>{label}</strong>
+                  <small>{note}</small>
+                </span>
+                <span className="destination-eta">
+                  <Clock3 aria-hidden="true" />{eta}
+                </span>
+                <ChevronRight className="destination-arrow" aria-hidden="true" />
+              </motion.button>
+            ))}
+          </motion.div>
+
+          <p className="helper-line">
+            <Headphones aria-hidden="true" /> Select a destination and we will plan the route.
+          </p>
+        </motion.section>
+      )}
     </AnimatePresence>
   </>
 );
 
 export const RouteDetails: React.FC<{ onTrack: () => void; selectedMode: TransitMode; onBack?: () => void }> = ({ onTrack, selectedMode, onBack }) => (
-  <section className="screen-panel route-screen" aria-labelledby="route-heading">
-    <div className="route-topline"><button className="back-link" type="button" onClick={onBack}><ChevronRight className="back-chevron" aria-hidden="true" /> Edit search</button><span className="live-label"><span className="status-dot" /> Live route</span></div>
-    <div className="route-title-row"><div><span className="section-kicker">Your journey · Today, 06:48</span><h2 id="route-heading">Home Node <span>to</span> KDU Campus</h2><p className="lede">Arrive by 07:06 · 18 min total</p></div><div className="route-score"><strong>96</strong><span>smooth<br />journey</span></div></div>
-    <div className="critical-grid"><div className="critical-card delay"><span><Clock3 aria-hidden="true" /> On time</span><strong>18 min</strong><small>Arrives 07:06</small></div><div className="critical-card transfer"><span><RefreshCw aria-hidden="true" /> Transfer</span><strong>1 change</strong><small>Central Exchange</small></div><div className="critical-card good"><span><ShieldCheck aria-hidden="true" /> Safety</span><strong>Clear</strong><small>All systems normal</small></div></div>
-    <div className="rebook-alert"><span className="alert-icon"><Wifi aria-hidden="true" /></span><div><strong>Smart rebook is ready</strong><p>If Rail 08 slows down, we will move you to Bus 12 automatically. No action needed.</p></div><button type="button" aria-label="View smart rebook options"><ChevronRight aria-hidden="true" /></button></div>
-    <div className="timeline-wrap"><div className="section-heading"><div><span className="section-kicker">03 / Your route</span><h3>Three simple steps</h3></div><span className="route-id">AUR-204</span></div><div className="timeline">
-      <TimelineItem icon={MapPin} time="06:48" title="Home Node" detail="Walk to pickup bay 2 · 2 min" state="complete" />
-      <TimelineItem icon={TrainFront} time="06:50" title="Autonomous Rail 08" detail={`${selectedMode === 'air' ? 'Switch from air corridor' : 'Central line'} · 12 min`} state="active" />
-      <TimelineItem icon={BusFront} time="07:02" title="KDU Campus" detail="Exit at Learning Gate · 4 min walk" state="upcoming" last />
-    </div></div>
-    <button className="primary-action" onClick={onTrack}><Navigation aria-hidden="true" /> Follow this journey <ArrowRight aria-hidden="true" /></button>
-  </section>
+  <motion.section
+    className="screen-panel route-screen"
+    aria-labelledby="route-heading"
+    variants={containerStagger}
+    initial="hidden"
+    animate="show"
+  >
+    <motion.div className="route-topline" variants={itemFadeUp}>
+      <motion.button
+        className="back-link"
+        type="button"
+        onClick={onBack}
+        whileHover={{ x: -2 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <ChevronRight className="back-chevron" aria-hidden="true" /> Edit search
+      </motion.button>
+      <span className="live-label">
+        <span className="status-dot" /> Live route
+      </span>
+    </motion.div>
+
+    <motion.div className="route-title-row" variants={itemFadeUp}>
+      <div>
+        <span className="section-kicker">Your journey · Today, 06:48</span>
+        <h2 id="route-heading">Home Node <span>to</span> KDU Campus</h2>
+        <p className="lede">Arrive by 07:06 · 18 min total</p>
+      </div>
+      <motion.div
+        className="route-score"
+        whileHover={{ scale: 1.06 }}
+        transition={{ type: 'spring', stiffness: 350, damping: 20 }}
+      >
+        <strong>96</strong>
+        <span>smooth<br />journey</span>
+      </motion.div>
+    </motion.div>
+
+    <motion.div className="critical-grid" variants={itemFadeUp}>
+      <motion.div
+        className="critical-card delay"
+        whileHover={{ y: -2, scale: 1.02 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      >
+        <span><Clock3 aria-hidden="true" /> On time</span>
+        <strong>18 min</strong>
+        <small>Arrives 07:06</small>
+      </motion.div>
+      <motion.div
+        className="critical-card transfer"
+        whileHover={{ y: -2, scale: 1.02 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      >
+        <span><RefreshCw aria-hidden="true" /> Transfer</span>
+        <strong>1 change</strong>
+        <small>Central Exchange</small>
+      </motion.div>
+      <motion.div
+        className="critical-card good"
+        whileHover={{ y: -2, scale: 1.02 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      >
+        <span><ShieldCheck aria-hidden="true" /> Safety</span>
+        <strong>Clear</strong>
+        <small>All systems normal</small>
+      </motion.div>
+    </motion.div>
+
+    <motion.div
+      className="rebook-alert"
+      variants={itemFadeUp}
+      whileHover={{ y: -1 }}
+    >
+      <span className="alert-icon"><Wifi aria-hidden="true" /></span>
+      <div>
+        <strong>Smart rebook is ready</strong>
+        <p>If Rail 08 slows down, we will move you to Bus 12 automatically. No action needed.</p>
+      </div>
+      <motion.button
+        type="button"
+        aria-label="View smart rebook options"
+        whileHover={{ x: 3 }}
+      >
+        <ChevronRight aria-hidden="true" />
+      </motion.button>
+    </motion.div>
+
+    <motion.div className="timeline-wrap" variants={itemFadeUp}>
+      <div className="section-heading">
+        <div>
+          <span className="section-kicker">03 / Your route</span>
+          <h3>Three simple steps</h3>
+        </div>
+        <span className="route-id">AUR-204</span>
+      </div>
+      <div className="timeline">
+        <TimelineItem icon={MapPin} time="06:48" title="Home Node" detail="Walk to pickup bay 2 · 2 min" state="complete" delay={0.1} />
+        <TimelineItem icon={TrainFront} time="06:50" title="Autonomous Rail 08" detail={`${selectedMode === 'air' ? 'Switch from air corridor' : 'Central line'} · 12 min`} state="active" delay={0.18} />
+        <TimelineItem icon={BusFront} time="07:02" title="KDU Campus" detail="Exit at Learning Gate · 4 min walk" state="upcoming" delay={0.26} last />
+      </div>
+    </motion.div>
+
+    <motion.button
+      className="primary-action"
+      onClick={onTrack}
+      variants={itemFadeUp}
+      whileHover={{ y: -2, scale: 1.015 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+    >
+      <Navigation aria-hidden="true" /> Follow this journey <ArrowRight aria-hidden="true" />
+    </motion.button>
+  </motion.section>
 );
 
-const TimelineItem: React.FC<{ icon: React.ElementType; time: string; title: string; detail: string; state: string; last?: boolean }> = ({ icon: Icon, time, title, detail, state, last }) => <div className={`timeline-item ${state} ${last ? 'last' : ''}`}><div className="timeline-rail"><span className="timeline-node"><Icon aria-hidden="true" /></span></div><div className="timeline-copy"><span className="timeline-time">{time}</span><strong>{title}</strong><small>{detail}</small></div><span className="timeline-state">{state === 'complete' ? 'Done' : state === 'active' ? 'Now' : 'Next'}</span></div>;
+const TimelineItem: React.FC<{ icon: React.ElementType; time: string; title: string; detail: string; state: string; delay?: number; last?: boolean }> = ({ icon: Icon, time, title, detail, state, delay = 0, last }) => (
+  <motion.div
+    className={`timeline-item ${state} ${last ? 'last' : ''}`}
+    initial={{ opacity: 0, x: -14 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.4, delay, ease: [0.22, 1, 0.36, 1] }}
+  >
+    <div className="timeline-rail">
+      <span className="timeline-node">
+        <Icon aria-hidden="true" />
+      </span>
+    </div>
+    <div className="timeline-copy">
+      <span className="timeline-time">{time}</span>
+      <strong>{title}</strong>
+      <small>{detail}</small>
+    </div>
+    <span className="timeline-state">
+      {state === 'complete' ? 'Done' : state === 'active' ? 'Now' : 'Next'}
+    </span>
+  </motion.div>
+);
 
 export const LiveTracking: React.FC<{ linear: boolean; onToggleLinear: () => void }> = ({ linear, onToggleLinear }) => (
-  <section className="tracking-screen" aria-labelledby="tracking-heading">
-    <div className="tracking-header"><div><span className="section-kicker">04 / Live tracking</span><h2 id="tracking-heading">Rail 08 is moving</h2><p className="lede">Central Exchange <span>→</span> KDU Campus</p></div><span className="tracking-live"><span className="status-dot" /> Live</span></div>
-    <div className={`tracking-visual ${linear ? 'linear-mode' : ''}`}>
-      {!linear ? <><div className="map-grid" /><div className="map-label label-a">CENTRAL EXCHANGE</div><div className="map-label label-b">KDU CAMPUS</div><div className="map-line"><span className="map-stop stop-a" /><span className="map-stop stop-b" /><span className="map-stop stop-c" /><span className="vehicle-pulse"><TrainFront aria-hidden="true" /></span></div><div className="map-compass">N<br /><span>+</span></div></> : <div className="linear-progress"><div className="progress-label"><strong>3 stops remaining</strong><span>Arriving in 4 min</span></div><div className="progress-track"><span /><i /><i /><i /></div><div className="progress-stops"><span>Central<br />Exchange</span><span>Park<br />Ring</span><span>Learning<br />Gate</span><span>KDU<br />Campus</span></div></div>}
-      <button className="view-toggle" onClick={onToggleLinear} aria-pressed={linear}>{linear ? <Navigation aria-hidden="true" /> : <Route aria-hidden="true" />}<span>{linear ? 'Map view' : 'Linear / list mode'}</span></button>
-    </div>
-    <div className="status-sheet"><div className="sheet-handle" /><div className="status-sheet-heading"><div><span className="section-kicker">Simple live status</span><h3>Everything is on track.</h3></div><ShieldCheck className="safety-icon" aria-label="Safety status: clear" /></div><div className="live-metrics"><div><Gauge aria-hidden="true" /><span>Speed</span><strong>242 km/h</strong></div><div><MapPin aria-hidden="true" /><span>Current node</span><strong>Park Ring 03</strong></div><div><CloudSun aria-hidden="true" /><span>Conditions</span><strong>Clear and safe</strong></div></div><button className="secondary-action" type="button"><Headphones aria-hidden="true" /> Need help?</button></div>
-  </section>
+  <motion.section
+    className="tracking-screen"
+    aria-labelledby="tracking-heading"
+    variants={containerStagger}
+    initial="hidden"
+    animate="show"
+  >
+    <motion.div className="tracking-header" variants={itemFadeUp}>
+      <div>
+        <span className="section-kicker">04 / Live tracking</span>
+        <h2 id="tracking-heading">Rail 08 is moving</h2>
+        <p className="lede">Central Exchange <span>→</span> KDU Campus</p>
+      </div>
+      <span className="tracking-live">
+        <span className="status-dot" /> Live
+      </span>
+    </motion.div>
+
+    <motion.div className={`tracking-visual ${linear ? 'linear-mode' : ''}`} variants={itemFadeUp}>
+      <AnimatePresence mode="wait">
+        {!linear ? (
+          <motion.div
+            key="map-view"
+            className="absolute inset-0"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="map-grid" />
+            <div className="map-label label-a">CENTRAL EXCHANGE</div>
+            <div className="map-label label-b">KDU CAMPUS</div>
+            <div className="map-line">
+              <span className="map-stop stop-a" />
+              <span className="map-stop stop-b" />
+              <span className="map-stop stop-c" />
+              <div className="vehicle-pulse" title="Rail 08 Active Pod">
+                <TrainFront aria-hidden="true" />
+              </div>
+            </div>
+            <div className="map-compass">
+              N<br /><span>+</span>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="linear-view"
+            className="absolute inset-0"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="linear-progress">
+              <div className="progress-label">
+                <strong>3 stops remaining</strong>
+                <span>Arriving in 4 min</span>
+              </div>
+              <div className="progress-track">
+                <motion.span
+                  initial={{ width: 0 }}
+                  animate={{ width: '55%' }}
+                  transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                />
+                <i /><i /><i />
+              </div>
+              <div className="progress-stops">
+                <span>Central<br />Exchange</span>
+                <span>Park<br />Ring</span>
+                <span>Learning<br />Gate</span>
+                <span>KDU<br />Campus</span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.button
+        className="view-toggle"
+        onClick={onToggleLinear}
+        aria-pressed={linear}
+        whileHover={{ y: -1, scale: 1.03 }}
+        whileTap={{ scale: 0.96 }}
+        transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+      >
+        {linear ? <Navigation aria-hidden="true" /> : <Route aria-hidden="true" />}
+        <span>{linear ? 'Map view' : 'Linear / list mode'}</span>
+      </motion.button>
+    </motion.div>
+
+    <motion.div className="status-sheet" variants={itemFadeUp}>
+      <div className="sheet-handle" />
+      <div className="status-sheet-heading">
+        <div>
+          <span className="section-kicker">Simple live status</span>
+          <h3>Everything is on track.</h3>
+        </div>
+        <ShieldCheck className="safety-icon" aria-label="Safety status: clear" />
+      </div>
+
+      <div className="live-metrics">
+        <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.2 }}>
+          <Gauge aria-hidden="true" />
+          <span>Speed</span>
+          <strong>242 km/h</strong>
+        </motion.div>
+        <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.2 }}>
+          <MapPin aria-hidden="true" />
+          <span>Current node</span>
+          <strong>Park Ring 03</strong>
+        </motion.div>
+        <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.2 }}>
+          <CloudSun aria-hidden="true" />
+          <span>Conditions</span>
+          <strong>Clear and safe</strong>
+        </motion.div>
+      </div>
+
+      <motion.button
+        className="secondary-action"
+        type="button"
+        whileHover={{ y: -1, scale: 1.02 }}
+        whileTap={{ scale: 0.96 }}
+      >
+        <Headphones aria-hidden="true" /> Need help?
+      </motion.button>
+    </motion.div>
+  </motion.section>
 );

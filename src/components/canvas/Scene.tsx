@@ -1,7 +1,7 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
-import { useRef, useState } from 'react';
+import * as THREE from 'three';
 import { CityModel } from './CityModel';
 import { AirTransit } from './AirTransit';
 import { SmartRoads } from './SmartRoads';
@@ -21,7 +21,7 @@ export const Scene: React.FC<SceneProps> = ({ mode, isMobile, onCameraArrived })
   const [isUserInteracting, setIsUserInteracting] = useState(false);
 
   // Reduce star count on mobile for performance
-  const starCount = isMobile ? 1800 : 4000;
+  const starCount = isMobile ? 1600 : 4000;
 
   return (
     <div className="w-full h-full absolute inset-0">
@@ -34,7 +34,7 @@ export const Scene: React.FC<SceneProps> = ({ mode, isMobile, onCameraArrived })
           alpha: false,
           // Limit pixel ratio on mobile to cap render load
         }}
-        dpr={isMobile ? [1, 1.5] : [1, 2]}
+        dpr={isMobile ? [1, 1.35] : [1, 2]}
       >
         <color attach="background" args={[isSubrail ? '#011022' : '#030712']} />
         <fog
@@ -87,6 +87,11 @@ export const Scene: React.FC<SceneProps> = ({ mode, isMobile, onCameraArrived })
             enablePan={false}
             enableDamping
             dampingFactor={0.08}
+            rotateSpeed={isMobile ? 0.75 : 1}
+            touches={{
+              ONE: THREE.TOUCH.ROTATE,
+              TWO: THREE.TOUCH.DOLLY_PAN,
+            }}
             minDistance={10}
             maxDistance={85}
             maxPolarAngle={Math.PI * 0.86}
