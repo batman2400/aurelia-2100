@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Transportation 2100 | Project Report</title>
+<style>
+  @page { size: A4; margin: 16mm; }
+  :root { --ink:#102326; --muted:#557174; --mint:#118a78; --aqua:#087d98; --line:#d6e5e1; --soft:#eef7f4; }
+  * { box-sizing:border-box; }
+  body { margin:0; color:var(--ink); font-family:Arial, Helvetica, sans-serif; font-size:10.5pt; line-height:1.42; }
+  h1,h2,h3 { margin:0; line-height:1.1; }
+  h1 { font-size:34pt; letter-spacing:.02em; }
+  h2 { font-size:20pt; color:var(--mint); margin-bottom:10px; }
+  h3 { font-size:12pt; margin-bottom:5px; }
+  p { margin:0 0 9px; }
+  .page { min-height:255mm; page-break-after:always; position:relative; }
+  .page:last-child { page-break-after:auto; }
+  .eyebrow { color:var(--aqua); text-transform:uppercase; letter-spacing:.15em; font-size:8pt; font-weight:bold; margin-bottom:12px; }
+  .cover { display:flex; flex-direction:column; justify-content:space-between; padding:16mm 5mm 8mm; background:linear-gradient(145deg,#f3fbf8,#e5f3f0); border:1px solid var(--line); }
+  .cover .hero { margin-top:28mm; }
+  .cover h1 span { color:var(--mint); }
+  .tagline { font-size:16pt; color:var(--muted); max-width:130mm; margin-top:12px; }
+  .meta { border-top:2px solid var(--mint); padding-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:10px 26px; }
+  .meta strong { display:block; color:var(--muted); font-size:8pt; text-transform:uppercase; letter-spacing:.12em; margin-bottom:2px; }
+  .link { color:#05677a; font-weight:bold; overflow-wrap:anywhere; }
+  .intro-grid { display:grid; grid-template-columns:1.15fr .85fr; gap:18px; }
+  .callout { background:var(--soft); border-left:4px solid var(--mint); padding:12px 14px; }
+  ul { margin:7px 0 12px 18px; padding:0; }
+  li { margin-bottom:5px; }
+  .stack { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
+  .stack div { border:1px solid var(--line); padding:9px; border-radius:6px; }
+  .stack strong { display:block; color:var(--mint); }
+  .screen-head { display:flex; justify-content:space-between; align-items:end; border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:12px; }
+  .screen-head p { color:var(--muted); margin:0; }
+  .shot { display:block; width:92mm; height:199mm; object-fit:cover; object-position:top; margin:0 auto; border:1px solid #b9ceca; border-radius:10px; box-shadow:0 5px 18px #173b3d22; }
+  .caption { text-align:center; color:var(--muted); margin:9px auto 0; max-width:120mm; font-size:9pt; }
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .flow { display:grid; gap:8px; }
+  .flow div { display:grid; grid-template-columns:28px 1fr; gap:9px; align-items:start; }
+  .num { width:25px; height:25px; display:grid; place-items:center; border-radius:50%; background:var(--mint); color:white; font-weight:bold; }
+  .footer { position:absolute; bottom:0; left:0; right:0; border-top:1px solid var(--line); padding-top:6px; color:var(--muted); font-size:8pt; display:flex; justify-content:space-between; }
+</style>
+</head>
+<body>
+<section class="page cover">
+  <div>
+    <div class="eyebrow">Interactive mobility concept · project report</div>
+    <div class="hero">
+      <h1>Transportation <span>2100</span></h1>
+      <p class="tagline">Human-first movement through an interactive anti-gravity metropolis.</p>
+    </div>
+  </div>
+  <div class="meta">
+    <div><strong>Team name</strong>Team Fade</div>
+    <div><strong>System name</strong>Aurelia-2100</div>
+    <div><strong>Hosted link</strong><span class="link">https://aurelia-2100.vercel.app</span></div>
+    <div><strong>Backup reference</strong><span class="link">https://aurelia-2100.vercel.app</span></div>
+  </div>
+  <div class="footer"><span>Transportation 2100</span><span>01</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">01 · Concept and design reasoning</div>
+  <h2>A city that makes movement legible</h2>
+  <div class="intro-grid">
+    <div>
+      <p>Transportation 2100 imagines a future city where air transit, smart roads, autonomous buses, and underground rail work as one readable mobility network. The experience uses a living 3D city as the visual context, then layers a calm journey-planning interface over it.</p>
+      <p>The design reasoning is human-first: the spectacle establishes place, but the interface prioritizes the next decision. Users first choose a transport layer, then choose a destination, review a route, and finally follow the vehicle live.</p>
+      <div class="callout"><strong>Core idea:</strong> make futuristic infrastructure feel as understandable as checking a familiar trip on a phone.</div>
+    </div>
+    <div>
+      <h3>Design principles</h3>
+      <ul>
+        <li><strong>Progressive disclosure:</strong> transport choices appear before selection and clear away after a mode is chosen.</li>
+        <li><strong>Scannability:</strong> route time, transfer, safety, status, and destination are grouped into compact panels.</li>
+        <li><strong>Feedback:</strong> camera transitions, Framer Motion reveals, selected states, live labels, and route metrics explain system status.</li>
+        <li><strong>Mobile reach:</strong> controls use large touch targets, bottom navigation, and a responsive destination drawer.</li>
+      </ul>
+    </div>
+  </div>
+  <h3>Implemented system</h3>
+  <div class="stack">
+    <div><strong>React 18 + TypeScript</strong> Component-driven application state and typed transit modes.</div>
+    <div><strong>Vite 5</strong> Fast development server and production bundling.</div>
+    <div><strong>Three.js / React Three Fiber</strong> Procedural anti-gravity city, stars, transport corridors, and camera states.</div>
+    <div><strong>Framer Motion</strong> Screen transitions, staggered route content, and interaction feedback.</div>
+    <div><strong>Tailwind CSS + CSS</strong> Responsive layout, glass panels, accessible focus states, and mobile breakpoints.</div>
+    <div><strong>Lucide icons + Web Audio API</strong> Consistent transport language and lightweight procedural sounds.</div>
+  </div>
+  <div class="footer"><span>Transportation 2100 · Concept and design</span><span>02</span></div>
+</section>
+
+<section class="page">
+  <div class="screen-head"><div><div class="eyebrow">02 · Required screen 1</div><h2>Home / Search</h2></div><p>Choose a mode and destination</p></div>
+  <img class="shot" src="report-assets/home-search-mobile.png" alt="Transportation 2100 Home and Search screen on a mobile phone">
+  <p class="caption">The opening screen presents the anti-gravity city and four transport choices: Air transport, Autonomous train, Autonomous bus, and Smart roads. Selecting a mode reveals the destination drawer with search, voice search, and quick destinations.</p>
+  <div class="footer"><span>Transportation 2100 · Mobile screen 1 of 3</span><span>03</span></div>
+</section>
+
+<section class="page">
+  <div class="screen-head"><div><div class="eyebrow">03 · Required screen 2</div><h2>Route Details</h2></div><p>Review the journey before departure</p></div>
+  <img class="shot" src="report-assets/route-details-mobile.png" alt="Transportation 2100 Route Details screen on a mobile phone">
+  <p class="caption">The route view turns a destination choice into an actionable plan: arrival time, total duration, transfer information, safety state, smart rebooking, a three-step timeline, and a clear Follow this journey action.</p>
+  <div class="footer"><span>Transportation 2100 · Mobile screen 2 of 3</span><span>04</span></div>
+</section>
+
+<section class="page">
+  <div class="screen-head"><div><div class="eyebrow">04 · Required screen 3</div><h2>Live Tracking</h2></div><p>Monitor the active journey</p></div>
+  <img class="shot" src="report-assets/live-tracking-mobile.png" alt="Transportation 2100 Live Tracking screen on a mobile phone">
+  <p class="caption">Live Tracking shows Rail 08 moving between Central Exchange and KDU Campus. A visual route map is paired with a simple status sheet for speed, current node, and safe travel conditions.</p>
+  <div class="footer"><span>Transportation 2100 · Mobile screen 3 of 3</span><span>05</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">05 · User flow and reference</div>
+  <h2>From city view to live journey</h2>
+  <div class="two-col">
+    <div class="flow">
+      <div><span class="num">1</span><p><strong>Explore.</strong><br>Start in the 3D city overview and choose a transport layer.</p></div>
+      <div><span class="num">2</span><p><strong>Plan.</strong><br>Select a quick destination such as Home Node, KDU Campus, or Central Sky Hub.</p></div>
+      <div><span class="num">3</span><p><strong>Review.</strong><br>Check duration, transfer, safety, and the three-step route timeline.</p></div>
+      <div><span class="num">4</span><p><strong>Track.</strong><br>Follow the journey and switch between map and linear progress views.</p></div>
+    </div>
+    <div>
+      <h3>Interaction and accessibility</h3>
+      <ul>
+        <li>Touch-friendly mobile controls and bottom navigation.</li>
+        <li>High-contrast / large-text access mode.</li>
+        <li>Visible selected, active, live, done, now, and next states.</li>
+        <li>ARIA labels for transport, navigation, audio, route, and status controls.</li>
+        <li>Audio can be muted with the persistent sound control.</li>
+        <li>Keyboard shortcuts: 1 Air, 2 Smart Roads, 3 Sub-Rail, Esc/0 reset.</li>
+      </ul>
+      <h3>Live hosted link</h3>
+      <p class="link">https://aurelia-2100.vercel.app</p>
+      <p>This link is included on the cover and repeated here as the backup reference point.</p>
+      <h3>Submission note</h3>
+      <p>The registered team name is Team Fade and the system name is Aurelia-2100.</p>
+    </div>
+  </div>
+  <div class="callout" style="margin-top:18px"><strong>Suggested filename:</strong> <span class="link">Team Fade.pdf</span></div>
+  <div class="footer"><span>Transportation 2100 · Reference and submission details</span><span>06</span></div>
+</section>
+</body>
+</html>

@@ -93,12 +93,12 @@ export const App: React.FC = () => {
         <motion.button
           className="brand-lockup"
           onClick={handleResetView}
-          aria-label="Transportation 2100 home"
+          aria-label="Aurelia-2100 home"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.96 }}
         >
           <span className="brand-symbol"><Route aria-hidden="true" /></span>
-          <span><strong>TRANSPORTATION <b>2100</b></strong><small>Human-first city movement</small></span>
+          <span><strong>AURELIA-2100</strong><small>Human-first city movement</small></span>
         </motion.button>
         <div className="header-actions">
           <motion.button
